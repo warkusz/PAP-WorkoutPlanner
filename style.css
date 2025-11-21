@@ -1,0 +1,16 @@
+/* Your custom styles */
+body {
+    /* Ensure the image path is correct relative to this file */
+    background-image: url("Images/gymbg1.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+/* Semi-transparent background for the footer so text is readable */
+.footer {
+    background-color: rgba(33, 37, 41, 1) !important;
+}
+.bg {
+    background-color: rgba(255, 255, 255);
+}
