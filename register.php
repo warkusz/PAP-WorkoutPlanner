@@ -84,6 +84,17 @@
 
                         <div class="form-floating mb-2">
                             <input
+                                type="nome"
+                                class="form-control"
+                                id="regNome"
+                                placeholder="Nome e Apelido"
+                                required
+                            />
+                            <label for="regNome">Nome</label>
+                        </div>
+
+                        <div class="form-floating mb-2">
+                            <input
                                 type="email"
                                 class="form-control"
                                 id="regEmail"
@@ -129,56 +140,22 @@
         </main>
 
         <footer class="footer mt-auto p-3 py-3 text-white-50 text-center">
-            Marcos Costa Projeto PAP - Ano letivo 2025/2026
+            Marcos Projeto PAP - Ano letivo 2025/2026
         </footer>
+    <?php
+    include('conexao.php');
+    if(isset($_POST['submit'])) {
+        $nome  = $_POST['nome'];
+        $email = $_POST['email'];
+        $senha = $_POST['password']; 
 
-        <script>
-            const registerForm = document.getElementById("registerForm");
-
-            registerForm.addEventListener("submit", async (e) => {
-                e.preventDefault(); // Impedir o reload da página
-
-                const email = document.getElementById("regEmail").value;
-                const password = document.getElementById("regPassword").value;
-                const confirmPassword =
-                    document.getElementById("regConfirmPassword").value;
-
-                if (password !== confirmPassword) {
-                    alert("Erro: As palavras-passe não coincidem.");
-                    return;
-                }
-
-                try {
-                    const response = await fetch(
-                        "http://localhost:3000/register",
-                        {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ email, password }),
-                        },
-                    );
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        alert(
-                            "Registo concluído com sucesso! Pode fazer Login agora.",
-                        );
-                        window.location.href = "login.html"; // Redireciona para o login
-                    } else {
-                        // Trata erros como e-mail já existente
-                        alert(
-                            "Erro no registo: " +
-                                (data.error || "Tente novamente."),
-                        );
-                    }
-                } catch (error) {
-                    console.error("Erro de conexão:", error);
-                    alert(
-                        "Não foi possível conectar ao servidor. O 'node server.js' está a correr?",
-                    );
-                }
-            });
-        </script>
+        $sql_registo = "INSERT INTO utilizadores (nome, email, senha, tipo) 
+                              VALUES ('$nome', '$email', '$senha', 'utilizador')";
+        
+        if(mysqli_query($conn, $sql_registo)) {
+            echo "<script>alert('Conta criada!'); window.location='index.php';</script>";
+        }
+    }
+    ?>
     </body>
 </html>
