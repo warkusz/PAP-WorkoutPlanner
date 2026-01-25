@@ -1,3 +1,29 @@
+<?php
+session_start(); // Inicia a sessão para guardar o login
+include('conexao.php');
+
+if(isset($_POST['btn-login'])) {
+    $email = $_POST['email'];
+    $senha = $_POST['password'];
+
+    // Procura o utilizador com o email e a senha digitados
+    $sql = "SELECT * FROM utilizadores WHERE email = '$email' AND senha = '$senha'";
+    $resultado = mysqli_query($conn, $sql);
+
+    // Verifica se encontrou exatamente 1 utilizador
+    if(mysqli_num_rows($resultado) == 1) {
+        $dados = mysqli_fetch_assoc($resultado);
+        
+        // Guarda o nome e o ID na sessão
+        $_SESSION['id'] = $dados['id'];
+        $_SESSION['nome'] = $dados['nome'];
+
+        echo "<script>alert('Bem-vindo!'); window.location='main.php';</script>";
+    } else {
+        echo "<script>alert('Email ou senha incorretos!');</script>";
+    }
+}
+?>
 <!doctype html>
 <html lang="pt">
     <head>
@@ -38,8 +64,8 @@
                         <li>
                             <a
                                 href="index.html"
-                                class="nav-link px-2 link-secondary"
-                                ><u>Início</u></a
+                                class="nav-link px-2 text-white"
+                                >Início</a
                             >
                         </li>
                         <li>
@@ -62,7 +88,7 @@
                         <a href="login.html" class="btn btn-outline-light me-2"
                             >Login</a
                         >
-                        <a href="register.html" class="btn btn-warning me-2"
+                        <a href="register.php" class="btn btn-warning me-2"
                             >Sign-up</a
                     </div>
                 </div>
@@ -77,36 +103,23 @@
                 style="width: 100%; max-width: 400px"
             >
                 <div class="card-body p-4">
-                    <form id="loginForm">
-                        <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
+                    <form action="login.php" method="POST">
+    <h1 class="h3 mb-3 fw-normal text-center">Login</h1>
 
-                        <div class="form-floating mb-2">
-                            <input
-                                type="email"
-                                class="form-control"
-                                id="floatingInput"
-                                placeholder="nome@exemplo.com"
-                            />
-                            <label for="floatingInput">Email</label>
-                        </div>
+    <div class="form-floating mb-2">
+        <input type="email" name="email" class="form-control" id="floatingInput" placeholder="nome@exemplo.com" required>
+        <label for="floatingInput">Email</label>
+    </div>
 
-                        <div class="form-floating mb-3">
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="floatingPassword"
-                                placeholder="Password"
-                            />
-                            <label for="floatingPassword">Password</label>
-                        </div>
+    <div class="form-floating mb-3">
+        <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+        <label for="floatingPassword">Password</label>
+    </div>
 
-                        <button
-                            class="btn btn-primary w-100 py-2"
-                            type="submit"
-                        >
-                            Entrar
-                        </button>
-                    </form>
+    <button class="btn btn-primary w-100 py-2" type="submit" name="btn-login">
+        Entrar
+    </button>
+</form>
                 </div>
             </div>
         </main>
@@ -114,38 +127,7 @@
         <footer class="footer mt-auto p-3 py-3 text-white-50 text-center">
             Marcos Costa Projeto PAP - Ano letivo 2025/2026
         </footer>
-        <script>
-                const loginForm = document.getElementById('loginForm');
-
-                loginForm.addEventListener('submit', async (e) => {
-                    e.preventDefault(); // 1. Stop page from reloading
-
-                    // 2. Get data from your specific IDs
-                    const email = document.getElementById('floatingInput').value;
-                    const password = document.getElementById('floatingPassword').value;
-
-                    try {
-                        // 3. Send data to your Arch backend
-                        const response = await fetch('http://localhost:3000/login', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password })
-                        });
-
-                        const data = await response.json();
-
-                        if (response.ok && data.message === "Login Successful!") {
-                            alert("Bem-vindo! Login successful.");
-                            window.location.href = "index.html"; // Redirect to home
-                        } else {
-                            alert("Erro: " + (data.error || data.message));
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert("Cannot connect to server. Is 'node server.js' running?");
-                    }
-                });
-            </script>
+        
         </body>
     </body>
 </html>
